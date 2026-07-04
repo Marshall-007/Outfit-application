@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
+    "generate:placeholders": "node scripts/generate-placeholders.js",
     "generate:products": "node scripts/generate-products.js",
     "generate:canned": "node scripts/generate-canned.js"
   },
