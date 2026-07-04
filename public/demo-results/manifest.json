@@ -1,0 +1,6 @@
+{
+  "_note": "Maps productId -> canned result files under public/demo-results/. Populate real files with `npm run generate:canned`. Missing entries fall back to _generic.",
+  "_generic": {
+    "tryon": "generic-tryon.svg"
+  }
+}
