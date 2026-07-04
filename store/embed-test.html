@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Some Other Shop — a site that never heard of Mirror</title>
+  <meta property="og:image" content="/assets/images/products/camel-coat-flat.svg">
+  <style>
+    /* Deliberately generic, un-Mirror-aware page. No data-mirror-* attributes
+       anywhere: the widget must find product images by heuristic alone. */
+    body { font-family: Verdana, sans-serif; margin: 0; background: #fff; color: #222; }
+    header { background: #123456; color: #fff; padding: 14px 20px; font-size: 20px; }
+    header img { height: 24px; vertical-align: middle; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 20px; }
+    .row { display: flex; gap: 20px; flex-wrap: wrap; }
+    .item { width: 260px; }
+    .item img { width: 260px; height: 320px; object-fit: cover; border: 1px solid #ccc; }
+    .tiny { width: 40px; height: 40px; }
+    footer { background: #eee; padding: 16px 20px; margin-top: 40px; font-size: 12px; }
+    footer img { width: 90px; }
+  </style>
+</head>
+<body>
+  <header>
+    ⛰ Some Other Shop — proof that Mirror works with ZERO integration
+  </header>
+
+  <div class="wrap">
+    <h1>Winter arrivals</h1>
+    <p>This page has <strong>no Mirror markup at all</strong> — no data attributes, no product JSON.
+       The only line added is the script tag at the bottom. Mirror finds the product images heuristically.</p>
+
+    <div class="row">
+      <div class="item">
+        <img src="/assets/images/products/camel-coat-model.svg" alt="Camel wool overcoat">
+        <p>Camel wool overcoat — $220</p>
+      </div>
+      <div class="item">
+        <img src="/assets/images/products/striped-sweater-model.svg" alt="Striped breton sweater">
+        <p>Striped breton sweater — $68</p>
+      </div>
+      <div class="item">
+        <img src="/assets/images/products/utility-jacket-flat.svg" alt="Olive field jacket">
+        <p>Olive field jacket — $110</p>
+      </div>
+    </div>
+
+    <p>Some small images the heuristic should ignore:
+      <img class="tiny" src="/assets/images/products/silk-scarf-flat.svg" alt="icon-sized image">
+      <img class="tiny" src="/assets/images/products/black-jeans-flat.svg" alt="another icon">
+    </p>
+  </div>
+
+  <footer>
+    A footer image the heuristic should also ignore:
+    <img src="/assets/images/products/linen-shirt-flat.svg" alt="footer decoration">
+  </footer>
+
+  <!-- The entire integration: -->
+  <script src="/mirror.js" defer></script>
+</body>
+</html>

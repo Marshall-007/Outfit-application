@@ -1,0 +1,90 @@
+[
+  {
+    "id": "denim-jacket",
+    "name": "Indigo Denim Jacket",
+    "price": 89,
+    "category": "outerwear",
+    "description": "A classic trucker silhouette in deep indigo wash. Sturdy 12oz denim that softens with wear, antique brass hardware, and a slightly cropped cut that layers well over knits.",
+    "emoji": "🧥",
+    "color": "#4a5d7a",
+    "flatImage": "/assets/images/products/denim-jacket-flat.svg",
+    "modelImage": "/assets/images/products/denim-jacket-model.svg"
+  },
+  {
+    "id": "linen-shirt",
+    "name": "White Linen Shirt",
+    "price": 59,
+    "category": "tops",
+    "description": "Breezy European flax linen with a relaxed collar and mother-of-pearl buttons. Cut loose through the body for warm days; tucks clean for evening.",
+    "emoji": "👔",
+    "color": "#b8b2a4",
+    "flatImage": "/assets/images/products/linen-shirt-flat.svg",
+    "modelImage": "/assets/images/products/linen-shirt-model.svg"
+  },
+  {
+    "id": "floral-dress",
+    "name": "Floral Midi Dress",
+    "price": 120,
+    "category": "dresses",
+    "description": "A flowing midi in vintage-inspired floral crepe. Square neckline, shirred back panel, and a skirt that moves. From garden party to gallery opening.",
+    "emoji": "👗",
+    "color": "#c2798f",
+    "flatImage": "/assets/images/products/floral-dress-flat.svg",
+    "modelImage": "/assets/images/products/floral-dress-model.svg"
+  },
+  {
+    "id": "black-jeans",
+    "name": "Black Slim Jeans",
+    "price": 75,
+    "category": "bottoms",
+    "description": "Our signature slim fit in saturated black stretch denim that keeps its color. Mid-rise, tapered leg, no-fade guarantee for the first fifty washes.",
+    "emoji": "👖",
+    "color": "#3a3a40",
+    "flatImage": "/assets/images/products/black-jeans-flat.svg",
+    "modelImage": "/assets/images/products/black-jeans-model.svg"
+  },
+  {
+    "id": "camel-coat",
+    "name": "Camel Wool Coat",
+    "price": 220,
+    "category": "outerwear",
+    "description": "A single-breasted overcoat in Italian wool-cashmere blend. Clean lines, horn buttons, fully lined. The coat that finishes every winter outfit.",
+    "emoji": "🧥",
+    "color": "#b3854d",
+    "flatImage": "/assets/images/products/camel-coat-flat.svg",
+    "modelImage": "/assets/images/products/camel-coat-model.svg"
+  },
+  {
+    "id": "striped-sweater",
+    "name": "Striped Knit Sweater",
+    "price": 68,
+    "category": "knitwear",
+    "description": "Breton stripes on a mid-weight cotton knit. Drop shoulders, ribbed trims, and the kind of easy shape that works over a collar or on its own.",
+    "emoji": "🧶",
+    "color": "#5d7ba3",
+    "flatImage": "/assets/images/products/striped-sweater-flat.svg",
+    "modelImage": "/assets/images/products/striped-sweater-model.svg"
+  },
+  {
+    "id": "utility-jacket",
+    "name": "Olive Utility Jacket",
+    "price": 110,
+    "category": "outerwear",
+    "description": "A field jacket in washed olive cotton twill. Four patch pockets, drawcord waist, and a garment-dyed finish that already looks broken in.",
+    "emoji": "🧥",
+    "color": "#6b7d5a",
+    "flatImage": "/assets/images/products/utility-jacket-flat.svg",
+    "modelImage": "/assets/images/products/utility-jacket-model.svg"
+  },
+  {
+    "id": "silk-scarf",
+    "name": "Silk Paisley Scarf",
+    "price": 45,
+    "category": "accessories",
+    "description": "Hand-rolled edges on pure mulberry silk twill, printed with an archival paisley in plum and ochre. Wear it at the neck, in the hair, or on the bag.",
+    "emoji": "🧣",
+    "color": "#96637f",
+    "flatImage": "/assets/images/products/silk-scarf-flat.svg",
+    "modelImage": "/assets/images/products/silk-scarf-model.svg"
+  }
+]

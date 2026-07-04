@@ -1,0 +1,185 @@
+/* Aurelle & Co. — demo storefront styling */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink: #26241f;
+  --ink-soft: #6f6a60;
+  --paper: #faf8f4;
+  --line: #e6e1d7;
+  --accent: #8a6d3b;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.55;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* Header */
+.site-header {
+  border-bottom: 1px solid var(--line);
+  background: rgba(250, 248, 244, 0.94);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(6px);
+}
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.brand {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 26px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+.site-nav { display: flex; gap: 26px; flex: 1; }
+.site-nav a {
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.site-nav a:hover { color: var(--ink); }
+.header-actions { display: flex; gap: 18px; font-size: 20px; cursor: pointer; }
+
+/* Hero */
+.hero {
+  text-align: center;
+  padding: 72px 24px 56px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(#f4efe7, var(--paper));
+}
+.hero-kicker {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(34px, 5vw, 56px);
+  font-weight: 400;
+  margin-bottom: 14px;
+}
+.hero-sub { color: var(--ink-soft); max-width: 520px; margin: 0 auto; }
+
+/* Grid */
+.container { max-width: 1200px; margin: 0 auto; padding: 48px 24px 80px; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 32px 24px;
+}
+.card-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #eee9e0;
+  border-radius: 4px;
+}
+.card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.card:hover .card-media img { transform: scale(1.03); }
+.card-body { padding: 12px 2px; }
+.card-body h3 { font-weight: 500; font-size: 15px; }
+.price { color: var(--ink-soft); font-size: 14px; margin-top: 2px; }
+.price.big { font-size: 20px; color: var(--ink); margin: 6px 0 18px; }
+
+/* Product detail */
+.breadcrumb { font-size: 13px; color: var(--ink-soft); margin-bottom: 24px; }
+.breadcrumb a:hover { color: var(--ink); }
+.detail {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 48px;
+  align-items: start;
+}
+.detail-media {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.shot { position: relative; }
+.shot img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  display: block;
+  border-radius: 4px;
+  background: #eee9e0;
+}
+.shot figcaption {
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-top: 8px;
+  text-align: center;
+}
+.detail-info .category {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.detail-info h1 {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: 34px;
+  margin: 6px 0 4px;
+}
+.description { color: var(--ink-soft); margin-bottom: 24px; }
+.sizes { display: flex; gap: 8px; margin-bottom: 20px; }
+.size {
+  width: 46px;
+  height: 40px;
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  border-radius: 3px;
+}
+.size.selected { border-color: var(--ink); background: var(--ink); color: #fff; }
+.add-to-bag {
+  width: 100%;
+  padding: 15px;
+  background: var(--ink);
+  color: #fff;
+  border: none;
+  font-size: 14px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.add-to-bag:hover { background: #000; }
+.detail-note { font-size: 12px; color: var(--ink-soft); margin-top: 14px; text-align: center; }
+
+/* Footer */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 32px 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 860px) {
+  .site-nav { display: none; }
+  .detail { grid-template-columns: 1fr; }
+}

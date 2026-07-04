@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="rgb(220, 220, 221)"/>
+      <stop offset="1" stop-color="rgb(186, 186, 188)"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <circle cx="400" cy="430" r="210" fill="#ffffff" opacity="0.45"/>
+  <text x="400" y="500" text-anchor="middle" font-size="150">🧍👖</text>
+  <text x="400" y="720" text-anchor="middle" font-family="Georgia, serif" font-size="40" fill="#3a3a40">Black Slim Jeans</text>
+  <text x="400" y="765" text-anchor="middle" font-family="sans-serif" font-size="22" fill="#3a3a40" opacity="0.75">Model shot · placeholder</text>
+  <text x="400" y="950" text-anchor="middle" font-family="sans-serif" font-size="17" fill="#3a3a40" opacity="0.55">run "npm run generate:products" for AI photography</text>
+</svg>

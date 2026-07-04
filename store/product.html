@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelle &amp; Co.</title>
+  <link rel="stylesheet" href="/store.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/">Aurelle &amp; Co.</a>
+      <nav class="site-nav">
+        <a href="/">New In</a>
+        <a href="/">Women</a>
+        <a href="/">Men</a>
+        <a href="/">Accessories</a>
+        <a href="/">Sale</a>
+      </nav>
+      <div class="header-actions">
+        <span title="Search">⌕</span>
+        <span title="Bag">🛍</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <p class="breadcrumb"><a href="/">Shop</a> / <span id="crumb-name"></span></p>
+    <div class="detail" id="product-detail">
+      <!-- store.js renders the product here. The rendered <img> elements carry
+           data-mirror-product / data-mirror-name / data-mirror-mode attributes:
+           that is the documented, explicit integration path for Mirror. -->
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Aurelle &amp; Co. — a demonstration storefront for the Mirror virtual try-on widget. Nothing here is for sale.</p>
+  </footer>
+
+  <script src="/store.js"></script>
+
+  <!-- Mirror virtual try-on — the one-line integration -->
+  <script src="/mirror.js" defer></script>
+</body>
+</html>
