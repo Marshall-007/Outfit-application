@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mirror — Live Preview</title>
+<style>
+  :root {
+    --paper: #f6f1ef;
+    --surface: #fffdfc;
+    --surface-2: #fbf5f3;
+    --ink: #241b26;
+    --ink-soft: #6d6373;
+    --line: #e8ddd8;
+    --accent: #b03a6c;
+    --accent-deep: #7c2b52;
+    --accent-soft: #f5e6ee;
+    --gold: #9c7a45;
+    --shadow: rgba(52,26,44,0.16);
+    --radius: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #16121a;
+      --surface: #211926;
+      --surface-2: #2a2030;
+      --ink: #f3e9ef;
+      --ink-soft: #b1a2b6;
+      --line: #352a38;
+      --accent: #e779a8;
+      --accent-deep: #c65688;
+      --accent-soft: #2c2030;
+      --gold: #cfa76a;
+      --shadow: rgba(0,0,0,0.55);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #f6f1ef; --surface: #fffdfc; --surface-2: #fbf5f3; --ink: #241b26;
+    --ink-soft: #6d6373; --line: #e8ddd8; --accent: #b03a6c; --accent-deep: #7c2b52;
+    --accent-soft: #f5e6ee; --gold: #9c7a45; --shadow: rgba(52,26,44,0.16);
+  }
+  :root[data-theme="dark"] {
+    --paper: #16121a; --surface: #211926; --surface-2: #2a2030; --ink: #f3e9ef;
+    --ink-soft: #b1a2b6; --line: #352a38; --accent: #e779a8; --accent-deep: #c65688;
+    --accent-soft: #2c2030; --gold: #cfa76a; --shadow: rgba(0,0,0,0.55);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+  .serif { font-family: Georgia, "Times New Roman", serif; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700;
+  }
+  a { color: var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero { text-align: center; padding: 64px 0 20px; }
+  .wordmark { position: relative; display: inline-block; }
+  .wordmark h1 {
+    font-family: Georgia, serif; font-weight: 400; font-style: italic;
+    font-size: clamp(58px, 15vw, 108px); line-height: 0.9; margin: 0;
+    letter-spacing: -0.02em; color: var(--ink);
+  }
+  .wordmark .reflect {
+    position: absolute; left: 0; right: 0; top: 100%;
+    font-family: Georgia, serif; font-style: italic; font-weight: 400;
+    font-size: clamp(58px, 15vw, 108px); line-height: 0.9; letter-spacing: -0.02em;
+    color: var(--accent); transform: scaleY(-1); opacity: 0.16;
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 55%);
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 55%);
+    pointer-events: none; user-select: none;
+  }
+  .tagline {
+    font-size: clamp(18px, 3.4vw, 22px); color: var(--ink-soft);
+    max-width: 30ch; margin: 68px auto 0; text-wrap: balance;
+  }
+  .tagline b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- fitting room card ---------- */
+  .room {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: 0 24px 60px -30px var(--shadow);
+    margin: 40px 0; overflow: hidden;
+  }
+  .room-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 18px; border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+  }
+  .room-head .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  .room-head .name { font-weight: 700; font-size: 14px; }
+  .room-head .step-tag {
+    margin-left: auto; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft); font-weight: 600;
+  }
+  .room-body { padding: 22px; }
+
+  h2.step { font-family: Georgia, serif; font-weight: 400; font-size: 24px; margin: 0 0 4px; }
+  p.sub { margin: 0 0 18px; color: var(--ink-soft); font-size: 14px; }
+
+  .products { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .product {
+    border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+    cursor: pointer; background: var(--surface-2); text-align: left;
+    padding: 0; font: inherit; color: inherit; transition: border-color .15s, transform .15s;
+  }
+  .product:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .product.selected { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .product .thumb { aspect-ratio: 4/5; display: block; width: 100%; }
+  .product .meta { padding: 8px 10px; }
+  .product .p-name { font-size: 12.5px; font-weight: 600; line-height: 1.25; }
+  .product .p-price { font-size: 12px; color: var(--ink-soft); }
+
+  .fields { display: grid; gap: 10px; }
+  .btn {
+    appearance: none; border: none; cursor: pointer; font: inherit; font-weight: 700;
+    border-radius: 12px; padding: 14px 18px; width: 100%;
+    background: var(--accent); color: #fff; transition: filter .15s, transform .05s;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn:hover { filter: brightness(1.06); }
+  .btn:active { transform: translateY(1px); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .btn.ghost { background: var(--accent-soft); color: var(--accent-deep); }
+  .btn.line { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); font-weight: 600; }
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .btn-row-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .link-btn { background: none; border: none; color: var(--accent); font: inherit; cursor: pointer; text-decoration: underline; padding: 6px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  .preview-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+  .frame { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4/5; background: var(--surface-2); border: 1px solid var(--line); }
+  .frame img, .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .frame .cap { position: absolute; left: 8px; bottom: 8px; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(24,18,26,0.72); color: #fff; }
+  .frame .plus { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 34px; height: 34px; border-radius: 50%; background: var(--surface); color: var(--accent); font-weight: 800; display: grid; place-items: center; box-shadow: 0 3px 12px var(--shadow); }
+
+  .gen { text-align: center; padding: 40px 12px; }
+  .spinner { width: 54px; height: 54px; border-radius: 50%; border: 4px solid var(--accent-soft); border-top-color: var(--accent); margin: 0 auto 18px; animation: spin .9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .gen-line { color: var(--ink-soft); font-size: 14px; min-height: 20px; }
+
+  .compare { position: relative; border-radius: 14px; overflow: hidden; aspect-ratio: 4/5; background: var(--surface-2); user-select: none; }
+  .compare .layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .compare .after { }
+  .compare .divider { position: absolute; top: 0; bottom: 0; width: 3px; background: #fff; box-shadow: 0 0 10px rgba(0,0,0,.4); left: 50%; pointer-events: none; }
+  .compare .knob { position: absolute; top: 50%; left: 50%; width: 38px; height: 38px; border-radius: 50%; background: #fff; color: var(--accent-deep); transform: translate(-50%,-50%); display: grid; place-items: center; box-shadow: 0 3px 12px rgba(0,0,0,.35); pointer-events: none; font-size: 14px; }
+  .compare input[type=range] { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; }
+  .compare .tag { position: absolute; top: 10px; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: rgba(24,18,26,0.72); color: #fff; pointer-events: none; }
+  .compare .tag-l { left: 10px; }
+  .compare .tag-r { right: 10px; }
+  .sample-badge {
+    position: absolute; bottom: 10px; right: 10px; z-index: 3;
+    font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+    background: color-mix(in srgb, var(--gold) 22%, var(--surface)); color: var(--gold);
+    border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent); pointer-events: none;
+  }
+  .result-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+
+  .privacy { font-size: 11.5px; color: var(--ink-soft); margin-top: 14px; text-align: center; }
+
+  /* ---------- sections ---------- */
+  section.block { margin: 56px 0; }
+  h3.head { font-family: Georgia, serif; font-weight: 400; font-size: clamp(24px, 5vw, 30px); margin: 8px 0 14px; text-wrap: balance; }
+  .lead { color: var(--ink-soft); }
+  .code {
+    background: var(--ink); color: #f6eef2; border-radius: 12px; padding: 16px 18px;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13px;
+    overflow-x: auto; margin: 14px 0; line-height: 1.5;
+  }
+  .code .c-tag { color: var(--gold); }
+  .code .c-attr { color: #e779a8; }
+  .steps { display: grid; gap: 14px; margin: 18px 0 0; padding: 0; list-style: none; counter-reset: s; }
+  .steps li { display: grid; grid-template-columns: 34px 1fr; gap: 14px; align-items: start; }
+  .steps li::before {
+    counter-increment: s; content: counter(s);
+    width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center;
+    background: var(--accent-soft); color: var(--accent-deep); font-weight: 800; font-family: Georgia, serif;
+  }
+  .steps li b { display: block; }
+  .steps li span { color: var(--ink-soft); font-size: 14px; }
+  .step-txt span.kv-mono { color: var(--accent-deep); }
+
+  .facts { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .fact { background: var(--surface); padding: 16px 18px; display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: baseline; }
+  .fact .k { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); font-weight: 700; white-space: nowrap; }
+  .fact .v { font-size: 14px; color: var(--ink); }
+  .fact .v .muted { color: var(--ink-soft); }
+
+  .kv-mono { font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: var(--accent-soft); color: var(--accent-deep); padding: 1px 6px; border-radius: 6px; }
+
+  footer { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 30px 0 60px; }
+  footer .serif { font-style: italic; }
+
+  .theme-toggle {
+    position: fixed; top: 14px; right: 14px; z-index: 10;
+    width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); cursor: pointer; font-size: 17px;
+    box-shadow: 0 6px 18px -8px var(--shadow);
+  }
+
+  @media (max-width: 520px) {
+    .products { grid-template-columns: repeat(3, 1fr); }
+    .preview-row { grid-template-columns: 1fr 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .001ms !important; transition: none !important; }
+    .spinner { animation: spin 1.2s linear infinite; }
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeBtn" aria-label="Toggle light and dark theme" title="Toggle theme">◐</button>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="wordmark">
+      <h1 class="serif">Mirror</h1>
+      <div class="reflect" aria-hidden="true">Mirror</div>
+    </div>
+    <p class="tagline">See it on <b>you</b> before you buy — a virtual fitting room that drops into <b>any</b> clothing site with one line of code.</p>
+  </div>
+
+  <!-- ======================= LIVE FITTING ROOM ======================= -->
+  <div class="room" id="room">
+    <div class="room-head">
+      <span class="dot"></span>
+      <span class="name">Aurelle &amp; Co. · Fitting Room</span>
+      <span class="step-tag" id="stepTag">Step 1 of 3</span>
+    </div>
+    <div class="room-body" id="stage"><!-- rendered by JS --></div>
+  </div>
+
+  <!-- ======================= INTEGRATION ======================= -->
+  <section class="block">
+    <div class="eyebrow">The whole integration</div>
+    <h3 class="head">One line. No access to their backend.</h3>
+    <p class="lead">A retailer adds a single tag to their site. Mirror finds the product images, adds a “Try it on” button to each, and does the rest. That’s the entire lift.</p>
+    <div class="code">
+<span class="c-tag">&lt;script</span> <span class="c-attr">src</span>=<span>"https://your-mirror-server.com/mirror.js"</span> <span class="c-attr">defer</span><span class="c-tag">&gt;&lt;/script&gt;</span>
+    </div>
+    <p class="lead" style="font-size:14px">It works even on pages that were never told about Mirror — it can find the product images on its own — so you can demo it on a prospect’s real store, not just a mock-up.</p>
+  </section>
+
+  <!-- ======================= WHAT'S REAL ======================= -->
+  <section class="block">
+    <div class="eyebrow">Straight answer</div>
+    <h3 class="head">What’s real in this preview, and what isn’t.</h3>
+    <div class="facts">
+      <div class="fact"><span class="k">This page</span><span class="v">The full interface and flow are real and interactive. The generated “look” here is a <b>styled sample</b> made in your browser — the true try-on is produced by AI on the server.</span></div>
+      <div class="fact"><span class="k">The real thing</span><span class="v">Runs on the app in your repo. It sends the shopper’s photo + the garment to Google Gemini and returns a photorealistic try-on in about 5–15 seconds.</span></div>
+      <div class="fact"><span class="k">Your photo</span><span class="v">Stays in your browser here. In the real app it’s sent to the AI to make the preview and is <b>never stored</b> on the server.</span></div>
+      <div class="fact"><span class="k">Fail-safe</span><span class="v">If the AI is ever down, it quietly shows a sample instead of an error — the store never looks broken.</span></div>
+    </div>
+  </section>
+
+  <!-- ======================= RUN THE REAL ONE ======================= -->
+  <section class="block">
+    <div class="eyebrow">Test the real AI</div>
+    <h3 class="head">Run the full app in three steps.</h3>
+    <ol class="steps">
+      <li><div class="step-txt"><b>Get the code</b><span>Pull the <span class="kv-mono">main</span> branch of your Outfit-application repo to a computer with Node 18+.</span></div></li>
+      <li><div class="step-txt"><b>Start it</b><span>Run <span class="kv-mono">npm install</span> then <span class="kv-mono">npm start</span>, and open <span class="kv-mono">localhost:3000</span>. It works immediately with sample results — no key needed.</span></div></li>
+      <li><div class="step-txt"><b>Switch on real AI</b><span>Put a free Gemini key in <span class="kv-mono">.env</span> (aistudio.google.com/apikey) and restart. Now every try-on is generated live from a real photo.</span></div></li>
+    </ol>
+  </section>
+
+  <footer>
+    <p class="serif">Mirror</p>
+    <p>A working proof-of-concept · built to show, not just tell.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- theme toggle ---------- */
+  var root = document.documentElement;
+  document.getElementById("themeBtn").addEventListener("click", function () {
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    root.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+  });
+
+  /* ---------- product catalog (inline SVG art) ---------- */
+  function garmentSVG(bg, accent, shape, label) {
+    var body = {
+      jacket: '<path d="M40 46 L64 34 L100 30 L136 34 L160 46 L150 78 L134 70 L134 150 L66 150 L66 70 L50 78 Z" fill="'+accent+'"/><path d="M100 30 L100 150" stroke="'+bg+'" stroke-width="3" opacity=".5"/><circle cx="108" cy="70" r="3.5" fill="'+bg+'"/><circle cx="108" cy="92" r="3.5" fill="'+bg+'"/><circle cx="108" cy="114" r="3.5" fill="'+bg+'"/>',
+      dress: '<path d="M74 34 L100 44 L126 34 L136 58 L120 66 L138 150 L62 150 L80 66 L64 58 Z" fill="'+accent+'"/><circle cx="90" cy="80" r="3" fill="'+bg+'"/><circle cx="112" cy="104" r="3" fill="'+bg+'"/><circle cx="96" cy="124" r="3" fill="'+bg+'"/>',
+      coat: '<path d="M44 44 L70 32 L100 30 L130 32 L156 44 L148 96 L134 90 L134 156 L66 156 L66 90 L52 96 Z" fill="'+accent+'"/><path d="M100 30 L100 156" stroke="'+bg+'" stroke-width="3" opacity=".45"/><rect x="120" y="86" width="12" height="4" rx="2" fill="'+bg+'"/>'
+    };
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 250">'+
+      '<rect width="200" height="250" fill="'+bg+'"/>'+
+      '<ellipse cx="100" cy="120" rx="92" ry="118" fill="rgba(255,255,255,.14)"/>'+
+      (body[shape]||body.jacket)+
+      '</svg>';
+    return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
+  }
+
+  var PRODUCTS = [
+    { id:"denim", name:"Indigo Denim Jacket", price:"$89", shape:"jacket", bg:"#c9d6e6", tint:"#3f5c86" },
+    { id:"floral", name:"Floral Midi Dress", price:"$120", shape:"dress", bg:"#f3d9e2", tint:"#b2496c" },
+    { id:"camel", name:"Camel Wool Coat", price:"$220", shape:"coat", bg:"#ecdcc4", tint:"#a67c46" }
+  ];
+  PRODUCTS.forEach(function (p) { p.img = garmentSVG(p.bg, p.tint, p.shape); });
+
+  /* ---------- a bundled sample face (so no upload is required) ---------- */
+  var SAMPLE_FACE = "data:image/svg+xml;utf8," + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">'+
+    '<defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0c9a4"/><stop offset="1" stop-color="#d99e79"/></linearGradient></defs>'+
+    '<rect width="400" height="500" fill="url(#b)"/>'+
+    '<ellipse cx="200" cy="205" rx="120" ry="145" fill="#f6d9bd"/>'+
+    '<path d="M80 190 Q200 40 320 190 Q300 120 200 108 Q100 120 80 190 Z" fill="#5a3b2a"/>'+
+    '<circle cx="160" cy="200" r="12" fill="#3a2a22"/><circle cx="240" cy="200" r="12" fill="#3a2a22"/>'+
+    '<path d="M168 258 Q200 284 232 258" stroke="#a35b47" stroke-width="7" fill="none" stroke-linecap="round"/>'+
+    '<path d="M150 350 Q200 380 250 350 L250 500 L150 500 Z" fill="#e9e3dd"/>'+
+    '</svg>');
+
+  /* ---------- state ---------- */
+  var state = { step: "pick", product: PRODUCTS[0], photo: null, look: null };
+  var stage = document.getElementById("stage");
+  var stepTag = document.getElementById("stepTag");
+  var STATUS = ["Reading the garment…","Fitting the fabric…","Matching the lighting…","Tailoring the details…"];
+
+  function stepNumber() { return ({ pick:1, photo:2, preview:2, generating:3, result:3 })[state.step] || 1; }
+
+  function render() {
+    stepTag.textContent = "Step " + stepNumber() + " of 3";
+    if (state.step === "pick") return renderPick();
+    if (state.step === "photo") return renderPhoto();
+    if (state.step === "preview") return renderPreview();
+    if (state.step === "generating") return renderGenerating();
+    if (state.step === "result") return renderResult();
+  }
+
+  function renderPick() {
+    stage.innerHTML =
+      '<h2 class="step">Pick something to try on</h2>'+
+      '<p class="sub">This is a stand-in boutique — imagine it’s your client’s store.</p>'+
+      '<div class="products" id="products"></div>';
+    var grid = stage.querySelector("#products");
+    PRODUCTS.forEach(function (p) {
+      var b = document.createElement("button");
+      b.className = "product" + (p.id === state.product.id ? " selected" : "");
+      b.innerHTML = '<img class="thumb" src="'+p.img+'" alt="'+p.name+'">'+
+        '<div class="meta"><div class="p-name">'+p.name+'</div><div class="p-price">'+p.price+'</div></div>';
+      b.addEventListener("click", function () {
+        state.product = p;
+        state.step = state.photo ? "preview" : "photo";
+        render();
+      });
+      grid.appendChild(b);
+    });
+  }
+
+  function renderPhoto() {
+    stage.innerHTML =
+      '<h2 class="step">Add your photo</h2>'+
+      '<p class="sub">Use a clear, front-facing photo. It stays in your browser — nothing is uploaded from this preview.</p>'+
+      '<div class="fields">'+
+        '<button class="btn" id="pickFile">📸 Choose a photo</button>'+
+        '<button class="btn ghost" id="useSample">Use a sample face instead</button>'+
+        '<button class="link-btn" id="back">← Back to products</button>'+
+      '</div>'+
+      '<input type="file" id="file" accept="image/*" hidden>';
+    var file = stage.querySelector("#file");
+    stage.querySelector("#pickFile").addEventListener("click", function () { file.click(); });
+    file.addEventListener("change", function () {
+      if (!file.files || !file.files[0]) return;
+      downscale(file.files[0], function (url) { state.photo = url; state.step = "preview"; render(); });
+    });
+    stage.querySelector("#useSample").addEventListener("click", function () {
+      state.photo = SAMPLE_FACE; state.step = "preview"; render();
+    });
+    stage.querySelector("#back").addEventListener("click", function () { state.step = "pick"; render(); });
+  }
+
+  function renderPreview() {
+    stage.innerHTML =
+      '<h2 class="step">Ready to try it on?</h2>'+
+      '<p class="sub">'+state.product.name+'</p>'+
+      '<div class="preview-row">'+
+        '<div class="frame"><img src="'+state.photo+'" alt="You"><span class="cap">You</span></div>'+
+        '<div class="frame"><img src="'+state.product.img+'" alt="Garment"><span class="cap">The piece</span><div class="plus">+</div></div>'+
+      '</div>'+
+      '<button class="btn" id="go">Generate my look ✨</button>'+
+      '<button class="link-btn" id="change" style="width:100%;margin-top:6px">Change my photo</button>'+
+      '<p class="privacy">Your photo is used only to build the preview and is never stored on a server.</p>';
+    stage.querySelector("#go").addEventListener("click", function () { state.step = "generating"; render(); });
+    stage.querySelector("#change").addEventListener("click", function () { state.step = "photo"; render(); });
+  }
+
+  function renderGenerating() {
+    stage.innerHTML =
+      '<div class="gen"><div class="spinner"></div>'+
+      '<h2 class="step" style="margin-bottom:6px">Creating your look</h2>'+
+      '<div class="gen-line" id="line">'+STATUS[0]+'</div></div>';
+    var i = 0, line = stage.querySelector("#line");
+    var iv = setInterval(function () { i = (i+1) % STATUS.length; if (line) line.textContent = STATUS[i]; }, 1000);
+    composeLook(state.photo, state.product, function (url) {
+      state.look = url;
+      setTimeout(function () { clearInterval(iv); state.step = "result"; render(); }, 900);
+    });
+  }
+
+  function renderResult() {
+    stage.innerHTML =
+      '<h2 class="step">Here’s your look</h2>'+
+      '<p class="sub">'+state.product.name+' — drag the slider to compare</p>'+
+      '<div class="compare" id="cmp">'+
+        '<img class="layer" src="'+state.photo+'" alt="Before">'+
+        '<div class="after-wrap layer" id="afterWrap" style="position:absolute;inset:0"><img class="layer" src="'+state.look+'" alt="Your look"></div>'+
+        '<div class="divider" id="div"></div><div class="knob" id="knob">↔</div>'+
+        '<span class="tag tag-l">Before</span><span class="tag tag-r">Your look</span>'+
+        '<span class="sample-badge">Sample result</span>'+
+        '<input type="range" id="range" min="0" max="100" value="50" aria-label="Compare before and after">'+
+      '</div>'+
+      '<div class="result-actions">'+
+        '<button class="btn line" id="again">Try another piece ↻</button>'+
+        '<button class="btn" id="download">Download ⬇</button>'+
+      '</div>'+
+      '<p class="privacy">This “look” is a styled sample generated in your browser. The real app returns a photorealistic AI try-on.</p>';
+    var range = stage.querySelector("#range"), wrap = stage.querySelector("#afterWrap"),
+        divi = stage.querySelector("#div"), knob = stage.querySelector("#knob");
+    function upd() { var v = +range.value; wrap.style.clipPath = "inset(0 0 0 "+v+"%)"; divi.style.left = v+"%"; knob.style.left = v+"%"; }
+    range.addEventListener("input", upd); upd();
+    stage.querySelector("#again").addEventListener("click", function () { state.step = "pick"; render(); });
+    stage.querySelector("#download").addEventListener("click", function () {
+      var a = document.createElement("a"); a.href = state.look; a.download = "mirror-look.png"; a.click();
+    });
+  }
+
+  /* ---------- helpers ---------- */
+  function downscale(file, cb) {
+    var r = new FileReader();
+    r.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var s = Math.min(1, 720 / Math.max(img.width, img.height));
+        var c = document.createElement("canvas");
+        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+        cb(c.toDataURL("image/jpeg", 0.85));
+      };
+      img.onerror = function () { cb(SAMPLE_FACE); };
+      img.src = r.result;
+    };
+    r.onerror = function () { cb(SAMPLE_FACE); };
+    r.readAsDataURL(file);
+  }
+
+  // A styled "studio" version of the shopper's photo in the garment's tone.
+  // Honest stand-in: it recolors and lights their real photo (badged "Sample").
+  function composeLook(photoUrl, product, cb) {
+    var img = new Image();
+    img.onload = function () {
+      var W = 640, H = 800;
+      var c = document.createElement("canvas"); c.width = W; c.height = H;
+      var g = c.getContext("2d");
+      // cover-fit the photo
+      var s = Math.max(W / img.width, H / img.height);
+      var dw = img.width * s, dh = img.height * s;
+      g.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
+      // garment-toned wash over the lower body
+      var grad = g.createLinearGradient(0, H * 0.32, 0, H);
+      grad.addColorStop(0, "rgba(0,0,0,0)");
+      grad.addColorStop(1, hexA(product.tint, 0.55));
+      g.globalCompositeOperation = "multiply"; g.fillStyle = grad; g.fillRect(0, 0, W, H);
+      // soft studio light from top
+      g.globalCompositeOperation = "soft-light";
+      var light = g.createRadialGradient(W/2, H*0.28, 40, W/2, H*0.28, H*0.7);
+      light.addColorStop(0, "rgba(255,255,255,0.5)"); light.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = light; g.fillRect(0, 0, W, H);
+      // subtle overall tint for cohesion
+      g.globalCompositeOperation = "color";
+      g.fillStyle = hexA(product.tint, 0.14); g.fillRect(0, 0, W, H);
+      // vignette
+      g.globalCompositeOperation = "source-over";
+      var vig = g.createRadialGradient(W/2, H/2, H*0.35, W/2, H/2, H*0.72);
+      vig.addColorStop(0, "rgba(0,0,0,0)"); vig.addColorStop(1, "rgba(20,10,20,0.28)");
+      g.fillStyle = vig; g.fillRect(0, 0, W, H);
+      cb(c.toDataURL("image/png"));
+    };
+    img.onerror = function () { cb(photoUrl); };
+    img.src = photoUrl;
+  }
+
+  function hexA(hex, a) {
+    var n = parseInt(hex.slice(1), 16);
+    return "rgba(" + ((n>>16)&255) + "," + ((n>>8)&255) + "," + (n&255) + "," + a + ")";
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
