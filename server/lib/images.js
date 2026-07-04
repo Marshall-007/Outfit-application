@@ -1,6 +1,9 @@
 const { ApiError } = require('./errors');
 
-const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
+// SVG is allowed through validation so the placeholder catalog works end to
+// end; the Gemini provider can't send SVG and falls back to demo results.
+const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml'];
+const GEMINI_MIMES = ['image/jpeg', 'image/png', 'image/webp'];
 // Per-image cap. The full request must stay under Gemini's ~20MB inline-data
 // limit; the widget downscales client-side so real payloads are 100-300KB.
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
@@ -83,4 +86,4 @@ function toDataUrl({ mimeType, data }) {
   return `data:${mimeType};base64,${data}`;
 }
 
-module.exports = { parseDataUrl, imageFromDataUrl, imageFromUrl, resolveProductImage, toDataUrl, ALLOWED_MIMES, MAX_IMAGE_BYTES };
+module.exports = { parseDataUrl, imageFromDataUrl, imageFromUrl, resolveProductImage, toDataUrl, ALLOWED_MIMES, GEMINI_MIMES, MAX_IMAGE_BYTES };
