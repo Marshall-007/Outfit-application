@@ -634,16 +634,18 @@
     if (state.suggesting) {
       suggestBlock = '<div class="gen"><div class="spinner"></div><div class="gen-line">Styling outfits from your closet…</div></div>';
     } else if (state.suggestions && state.suggestions.length) {
-      suggestBlock = state.suggestions.map(function (s) {
+      suggestBlock = state.suggestions.map(function (s, si) {
         var thumbs = (s.closetItemIds || []).map(function (id) {
           var item = items.filter(function (c) { return c.id === id; })[0];
           return item ? '<img src="' + item.dataURL + '" alt="' + escapeHtml(item.label) + '" title="' + escapeHtml(item.label) + '">' : '';
         }).join('');
+        var canTryOutfit = !!state.product && (s.closetItemIds || []).length > 0;
         return '<div class="sugg-card">' +
           '<h4>' + escapeHtml(s.title) + '</h4>' +
           '<div class="sugg-thumbs">' + thumbs + '</div>' +
           '<p>' + escapeHtml(s.reasoning) + '</p>' +
           (s.missingPiece ? '<span class="missing">Missing piece: ' + escapeHtml(s.missingPiece) + '</span>' : '') +
+          (canTryOutfit ? '<button class="btn secondary sugg-try" data-sugg="' + si + '" type="button" style="margin-top:12px">Try on this outfit ✨</button>' : '') +
           '</div>';
       }).join('');
     } else {
@@ -704,6 +706,24 @@
     }
     var suggest = body.querySelector('#suggest');
     if (suggest) suggest.addEventListener('click', runSuggest);
+
+    var tryButtons = body.querySelectorAll('.sugg-try');
+    for (var k = 0; k < tryButtons.length; k++) {
+      tryButtons[k].addEventListener('click', function (e) {
+        var idx = Number(e.target.getAttribute('data-sugg'));
+        var suggestion = state.suggestions[idx];
+        if (!suggestion) return;
+        var items = getCloset();
+        // Gemini handles ~3-4 input images reliably; cap the outfit extras at 2.
+        var extras = (suggestion.closetItemIds || [])
+          .map(function (id) { var it = items.filter(function (c) { return c.id === id; })[0]; return it ? it.dataURL : null; })
+          .filter(Boolean)
+          .slice(0, 2);
+        state.tab = 'tryon';
+        state.product = Object.assign({}, state.product, { mode: 'tryon' });
+        runTryon(extras);
+      });
+    }
   }
 
   function runSuggest() {
