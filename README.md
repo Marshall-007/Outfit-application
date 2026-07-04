@@ -18,7 +18,7 @@ to a potential retail client. It contains three things served from one small ser
 | Feature | What the shopper sees |
 | --- | --- |
 | **Try it on** | Uploads one photo, then sees themselves wearing any product — with a before/after slider. |
-| **Mirror the model** 🪞 | Turns the store's model photo into a photo of _them_ in the same shot. |
+| **Mirror the model** | Turns the store's model photo into a photo of _them_ in the same shot. |
 | **My Closet** | Adds photos of clothes they already own (saved in their browser). |
 | **Outfit suggestions** | Gemini pairs the store item with their closet and explains why — plus an upsell hint ("missing piece"). |
 | **Try on the whole outfit** | Generates a look combining the store item _and_ their own pieces. |
@@ -31,7 +31,7 @@ The retailer **does not need to give us backend access**. The entire integration
 <script src="https://your-mirror-server.com/mirror.js" defer></script>
 ```
 
-The widget finds product images in the page, adds a **"Try it on ✨"** button to each,
+The widget finds product images in the page, adds a **"Try it on"** button to each,
 and calls our server (which holds the AI key). It works two ways:
 
 - **Explicit (recommended):** the retailer tags product images with
@@ -53,7 +53,7 @@ cp .env.example .env      # optional — see below
 npm start                 # http://localhost:3000
 ```
 
-Open **http://localhost:3000** — the demo store. Click any **Try it on ✨** button.
+Open **http://localhost:3000** — the demo store. Click any **Try it on** button.
 
 ### With or without an API key
 
@@ -88,8 +88,8 @@ Commit the generated files — after that the demo works forever, online or off.
 
 1. **Open the store.** "This is a stand-in for your site. Notice the one script tag
    at the bottom of the page — that's the _entire_ integration."
-2. **Open the Indigo Denim Jacket.** Hover the model photo → **See it on you 🪞** →
-   add your photo → drag the before/after slider. "The model is now _you_."
+2. **Open the Indigo Denim Jacket.** Hover the model photo, click **See it on you**,
+   add your photo, then drag the before/after slider. "The model is now _you_."
 3. **Click Try it on** on the flat product shot. "Same photo, reused — the shopper
    uploads once."
 4. **Open My Closet**, add 2–3 photos of clothes you own, hit **Suggest outfits.**

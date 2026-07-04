@@ -20,6 +20,25 @@
 
   var VERSION = '0.1.0';
 
+  // Inline line icons (no emoji) — stroke follows the button's text color.
+  function ic(paths, size) {
+    size = size || 18;
+    return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" ' +
+      'stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" ' +
+      'aria-hidden="true" style="vertical-align:-3px;flex:none">' + paths + '</svg>';
+  }
+  var ICON = {
+    camera: function (s) { return ic('<path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3"/>', s); },
+    download: ic('<path d="M12 4v10"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/>'),
+    refresh: ic('<path d="M20 11a8 8 0 1 0-.7 4.2"/><path d="M20 4v5h-5"/>'),
+    bag: ic('<path d="M6 8h12l-1 11H7L6 8z"/><path d="M9.5 8a2.5 2.5 0 0 1 5 0"/>'),
+    arrow: ic('<path d="M5 12h13"/><path d="M12 6l6 6-6 6"/>'),
+    plus: function (s) { return ic('<path d="M12 5v14"/><path d="M5 12h14"/>', s || 22); },
+    hanger: function (s) { return ic('<path d="M12 6.5a2 2 0 1 1 1.6 2L12 9.5V11"/><path d="M4 19l8-6 8 6"/><path d="M5 19h14"/>', s || 34); },
+    warning: function (s) { return ic('<path d="M12 4l9 16H3z"/><path d="M12 10v4.5"/><path d="M12 17.5h.01"/>', s || 32); },
+    sliders: ic('<path d="M9 8l-3 4 3 4"/><path d="M15 8l3 4-3 4"/>', 15),
+  };
+
   // ---------------------------------------------------------------- config
   var script = document.currentScript || document.querySelector('script[src*="mirror.js"]');
   var scriptOrigin = null;
@@ -130,7 +149,7 @@
     btn.type = 'button';
     btn.setAttribute('data-mirror-ui', '');
     btn.className = 'mirror-tryon-btn';
-    btn.textContent = mode === 'mirror' ? 'See it on you 🪞' : 'Try it on ✨';
+    btn.textContent = mode === 'mirror' ? 'See it on you' : 'Try it on';
     btn.style.cssText = [
       'position:absolute', 'z-index:2147482000', 'padding:8px 14px',
       'border:none', 'border-radius:999px', 'cursor:pointer',
@@ -268,7 +287,7 @@
       '<div class="overlay" id="overlay" hidden>' +
       '  <div class="dialog" role="dialog" aria-modal="true" aria-label="Mirror virtual try-on">' +
       '    <div class="head">' +
-      '      <div class="brand">Mirror <span class="spark">✨</span></div>' +
+      '      <div class="brand">Mirror</div>' +
       '      <div class="tabs">' +
       '        <button class="tab" data-tab="tryon" type="button">Try on</button>' +
       '        <button class="tab" data-tab="closet" type="button">My closet</button>' +
@@ -414,7 +433,7 @@
 
   function tryonView() {
     var p = state.product;
-    if (!p) return '<div class="empty"><span class="big">👗</span>Pick a product on the page (look for the “Try it on ✨” button) to get started.</div>';
+    if (!p) return '<div class="empty"><span class="big">' + ICON.hanger(34) + '</span>Pick a product on the page (look for the “Try it on” button) to get started.</div>';
     switch (state.step) {
       case 'photo': return photoView();
       case 'preview': return previewView();
@@ -442,7 +461,7 @@
     }
     return intro +
       '<div class="upload-tile" id="upload-tile" tabindex="0" role="button" aria-label="Add your photo">' +
-      '  <span class="big">📸</span>' +
+      '  <span class="big">' + ICON.camera(30) + '</span>' +
       '  <strong>Add your photo</strong>' +
       '  <span>Tap to choose a photo or take one with your camera</span>' +
       '</div>' +
@@ -458,7 +477,7 @@
       '  <figure><img src="' + getPhoto() + '" alt="Your photo"><figcaption>You</figcaption></figure>' +
       '  <figure><img src="' + productImgSrc() + '" alt="Product"><figcaption>' + (p.mode === 'mirror' ? 'The model shot' : 'The piece') + '</figcaption><div class="plus">+</div></figure>' +
       '</div>' +
-      '<button class="btn" id="generate" type="button">' + (p.mode === 'mirror' ? 'Put me in this photo 🪞' : 'Generate my look ✨') + '</button>' +
+      '<button class="btn" id="generate" type="button">' + (p.mode === 'mirror' ? 'Put me in this photo' : 'Generate my look') + '</button>' +
       '<button class="link" id="change-photo" type="button">Change my photo</button>';
   }
 
@@ -480,23 +499,23 @@
       '  <img src="' + before + '" alt="Before">' +
       '  <div class="after-wrap" id="after-wrap"><img src="' + r.image + '" alt="You wearing it"></div>' +
       '  <div class="divider" id="divider"></div>' +
-      '  <div class="knob" id="knob">↔</div>' +
+      '  <div class="knob" id="knob">' + ICON.sliders + '</div>' +
       '  <span class="taglabel tag-before">Before</span>' +
       '  <span class="taglabel tag-after">Your look</span>' +
       (isSample ? '<span class="badge">Sample result</span>' : '') +
       '  <input type="range" id="cmp-range" min="0" max="100" value="50" aria-label="Compare before and after">' +
       '</div>' +
       '<div class="result-actions">' +
-      '  <button class="btn secondary" id="download" type="button">Download ⬇</button>' +
-      '  <button class="btn secondary" id="again" type="button">Try again ↻</button>' +
-      '  <button class="btn" id="bag" type="button">Add to bag 🛍</button>' +
-      '  <button class="btn secondary" id="outfit" type="button">Complete the outfit →</button>' +
+      '  <button class="btn secondary" id="download" type="button">' + ICON.download + 'Download</button>' +
+      '  <button class="btn secondary" id="again" type="button">' + ICON.refresh + 'Try again</button>' +
+      '  <button class="btn" id="bag" type="button">' + ICON.bag + 'Add to bag</button>' +
+      '  <button class="btn secondary" id="outfit" type="button">Complete the outfit' + ICON.arrow + '</button>' +
       '</div>';
   }
 
   function errorView() {
     return '<div class="err">' +
-      '  <div class="icon">🪡</div>' +
+      '  <div class="icon">' + ICON.warning(34) + '</div>' +
       '  <div class="step-title">That didn’t work</div>' +
       '  <p>' + escapeHtml(state.error || 'Something went wrong.') + '</p>' +
       '  <button class="btn" id="retry" type="button">Try again</button>' +
@@ -622,7 +641,7 @@
         '</div>';
     }).join('');
     var addTile = items.length < 8
-      ? '<div class="closet-add" id="closet-add" tabindex="0" role="button"><span class="big">＋</span>Add item</div>'
+      ? '<div class="closet-add" id="closet-add" tabindex="0" role="button"><span class="big">' + ICON.plus(22) + '</span>Add item</div>'
       : '';
     var suggestBlock = '';
     if (items.length === 0) {
@@ -645,13 +664,13 @@
           '<div class="sugg-thumbs">' + thumbs + '</div>' +
           '<p>' + escapeHtml(s.reasoning) + '</p>' +
           (s.missingPiece ? '<span class="missing">Missing piece: ' + escapeHtml(s.missingPiece) + '</span>' : '') +
-          (canTryOutfit ? '<button class="btn secondary sugg-try" data-sugg="' + si + '" type="button" style="margin-top:12px">Try on this outfit ✨</button>' : '') +
+          (canTryOutfit ? '<button class="btn secondary sugg-try" data-sugg="' + si + '" type="button" style="margin-top:12px">Try on this outfit</button>' : '') +
           '</div>';
       }).join('');
     } else {
       var canSuggest = !!state.product;
       suggestBlock = canSuggest
-        ? '<button class="btn" id="suggest" type="button">Suggest outfits with ' + escapeHtml(shortName(state.product.name)) + ' ✨</button>'
+        ? '<button class="btn" id="suggest" type="button">Suggest outfits with ' + escapeHtml(shortName(state.product.name)) + '</button>'
         : '<div class="empty">Open a product page to get outfit suggestions that pair with your closet.</div>';
     }
     return '<div class="step-title">My closet</div>' +

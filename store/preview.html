@@ -283,6 +283,18 @@
 (function () {
   "use strict";
 
+  /* ---------- inline line icons (no emoji) ---------- */
+  function ic(paths, size) {
+    return '<svg viewBox="0 0 24 24" width="'+(size||18)+'" height="'+(size||18)+'" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px;flex:none">'+paths+'</svg>';
+  }
+  var ICON = {
+    camera: ic('<path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3"/>'),
+    back: ic('<path d="M19 12H6"/><path d="M12 6l-6 6 6 6"/>', 16),
+    download: ic('<path d="M12 4v10"/><path d="M8 11l4 4 4-4"/><path d="M5 19h14"/>'),
+    refresh: ic('<path d="M20 11a8 8 0 1 0-.7 4.2"/><path d="M20 4v5h-5"/>'),
+    sliders: ic('<path d="M9 8l-3 4 3 4"/><path d="M15 8l3 4-3 4"/>', 15)
+  };
+
   /* ---------- theme toggle ---------- */
   var root = document.documentElement;
   document.getElementById("themeBtn").addEventListener("click", function () {
@@ -313,16 +325,19 @@
   ];
   PRODUCTS.forEach(function (p) { p.img = garmentSVG(p.bg, p.tint, p.shape); });
 
-  /* ---------- a bundled sample face (so no upload is required) ---------- */
+  /* ---------- a bundled sample portrait (so no upload is required) ---------- */
+  /* A neutral studio silhouette — clearly a stand-in, no cartoon features. */
   var SAMPLE_FACE = "data:image/svg+xml;utf8," + encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">'+
-    '<defs><linearGradient id="b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f0c9a4"/><stop offset="1" stop-color="#d99e79"/></linearGradient></defs>'+
-    '<rect width="400" height="500" fill="url(#b)"/>'+
-    '<ellipse cx="200" cy="205" rx="120" ry="145" fill="#f6d9bd"/>'+
-    '<path d="M80 190 Q200 40 320 190 Q300 120 200 108 Q100 120 80 190 Z" fill="#5a3b2a"/>'+
-    '<circle cx="160" cy="200" r="12" fill="#3a2a22"/><circle cx="240" cy="200" r="12" fill="#3a2a22"/>'+
-    '<path d="M168 258 Q200 284 232 258" stroke="#a35b47" stroke-width="7" fill="none" stroke-linecap="round"/>'+
-    '<path d="M150 350 Q200 380 250 350 L250 500 L150 500 Z" fill="#e9e3dd"/>'+
+    '<defs>'+
+    '<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e7e0da"/><stop offset="1" stop-color="#cdc3ba"/></linearGradient>'+
+    '<radialGradient id="lt" cx="50%" cy="34%" r="52%"><stop offset="0" stop-color="#ffffff" stop-opacity=".55"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>'+
+    '<linearGradient id="fig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9c8f88"/><stop offset="1" stop-color="#7d726c"/></linearGradient>'+
+    '</defs>'+
+    '<rect width="400" height="500" fill="url(#bg)"/>'+
+    '<rect width="400" height="500" fill="url(#lt)"/>'+
+    '<path d="M110 500 C110 396 150 350 200 350 C250 350 290 396 290 500 Z" fill="url(#fig)"/>'+
+    '<circle cx="200" cy="188" r="92" fill="url(#fig)"/>'+
     '</svg>');
 
   /* ---------- state ---------- */
@@ -367,9 +382,9 @@
       '<h2 class="step">Add your photo</h2>'+
       '<p class="sub">Use a clear, front-facing photo. It stays in your browser — nothing is uploaded from this preview.</p>'+
       '<div class="fields">'+
-        '<button class="btn" id="pickFile">📸 Choose a photo</button>'+
-        '<button class="btn ghost" id="useSample">Use a sample face instead</button>'+
-        '<button class="link-btn" id="back">← Back to products</button>'+
+        '<button class="btn" id="pickFile">'+ICON.camera+'Choose a photo</button>'+
+        '<button class="btn ghost" id="useSample">Use a sample portrait instead</button>'+
+        '<button class="link-btn" id="back">'+ICON.back+' Back to products</button>'+
       '</div>'+
       '<input type="file" id="file" accept="image/*" hidden>';
     var file = stage.querySelector("#file");
@@ -392,7 +407,7 @@
         '<div class="frame"><img src="'+state.photo+'" alt="You"><span class="cap">You</span></div>'+
         '<div class="frame"><img src="'+state.product.img+'" alt="Garment"><span class="cap">The piece</span><div class="plus">+</div></div>'+
       '</div>'+
-      '<button class="btn" id="go">Generate my look ✨</button>'+
+      '<button class="btn" id="go">Generate my look</button>'+
       '<button class="link-btn" id="change" style="width:100%;margin-top:6px">Change my photo</button>'+
       '<p class="privacy">Your photo is used only to build the preview and is never stored on a server.</p>';
     stage.querySelector("#go").addEventListener("click", function () { state.step = "generating"; render(); });
@@ -419,14 +434,14 @@
       '<div class="compare" id="cmp">'+
         '<img class="layer" src="'+state.photo+'" alt="Before">'+
         '<div class="after-wrap layer" id="afterWrap" style="position:absolute;inset:0"><img class="layer" src="'+state.look+'" alt="Your look"></div>'+
-        '<div class="divider" id="div"></div><div class="knob" id="knob">↔</div>'+
+        '<div class="divider" id="div"></div><div class="knob" id="knob">'+ICON.sliders+'</div>'+
         '<span class="tag tag-l">Before</span><span class="tag tag-r">Your look</span>'+
         '<span class="sample-badge">Sample result</span>'+
         '<input type="range" id="range" min="0" max="100" value="50" aria-label="Compare before and after">'+
       '</div>'+
       '<div class="result-actions">'+
-        '<button class="btn line" id="again">Try another piece ↻</button>'+
-        '<button class="btn" id="download">Download ⬇</button>'+
+        '<button class="btn line" id="again">'+ICON.refresh+'Try another piece</button>'+
+        '<button class="btn" id="download">'+ICON.download+'Download</button>'+
       '</div>'+
       '<p class="privacy">This “look” is a styled sample generated in your browser. The real app returns a photorealistic AI try-on.</p>';
     var range = stage.querySelector("#range"), wrap = stage.querySelector("#afterWrap"),

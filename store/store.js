@@ -50,7 +50,7 @@
         <div class="sizes" role="group" aria-label="Size">
           ${['XS', 'S', 'M', 'L', 'XL'].map((s, i) => `<button class="size${i === 2 ? ' selected' : ''}" type="button">${s}</button>`).join('')}
         </div>
-        <button class="add-to-bag" type="button" onclick="this.textContent='Added ✓'; setTimeout(()=>this.textContent='Add to bag', 1500)">Add to bag</button>
+        <button class="add-to-bag" type="button" onclick="this.textContent='Added to bag'; setTimeout(()=>this.textContent='Add to bag', 1500)">Add to bag</button>
         <p class="detail-note">Free shipping over $150 · Free returns within 30 days</p>
       </div>
     `;
