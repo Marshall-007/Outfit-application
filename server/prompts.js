@@ -11,8 +11,12 @@ const tryonOutfit = ({ productName }) =>
   `\nThe remaining images are additional garments/accessories the person already owns — incorporate them to complete a cohesive outfit alongside the main garment.`;
 
 const mirror = () =>
-  `The first image is a photo of a person. The second image is a fashion model wearing an outfit in a studio setting.
-Replace the model's face and body identity with the person from the first image, so it looks like that person is the one wearing the outfit and posing. Keep the second image's clothing, pose, framing, lighting, and background exactly the same — only the identity (face, hair, skin tone, body) comes from the first image. Output a single photorealistic image.`;
+  `The first image is a photo of a customer's face. The second image is a fashion e-commerce product photo of a model wearing clothing.
+Make it look like the CUSTOMER from the first image is the person wearing these exact clothes. Specifically:
+- Replace the model's face with the customer's face, matching their facial features, hair, and expression naturally to the model's head position and camera angle.
+- Adjust ALL visible skin on the model — face, neck, hands, arms, legs — to match the customer's skin tone, so the result is consistent and believable.
+- Keep the clothing (every garment, colour, pattern, logo and fold), the pose, the body proportions, the framing, the lighting, and the background EXACTLY the same as the second image. Do not restyle or re-drape the clothes.
+Blend the swap seamlessly with realistic lighting and shadows. Output one photorealistic image at the same framing as the second image.`;
 
 // Instruction appended after the product image + labelled closet images.
 const suggest = ({ productName, category }) =>
